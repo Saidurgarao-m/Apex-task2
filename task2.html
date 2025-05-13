@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ultimate Smart Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('https://images.unsplash.com/photo-1517430816045-df4b7de11d1d') no-repeat center center fixed;
+      background-size: cover;
+    }
+    .overlay {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-around;
+      padding: 20px;
+      color: white;
+    }
+    h1 {
+      font-size: 3.5rem;
+      color: #00e5ff;
+      text-shadow: 3px 3px 5px rgba(0,0,0,0.8);
+    }
+    .content {
+      display: flex;
+      gap: 25px;
+      width: 100%;
+      max-width: 1200px;
+      justify-content: space-evenly;
+      align-items: stretch;
+      flex-wrap: wrap;
+    }
+    .box {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      flex: 1;
+      min-width: 300px;
+      max-width: 450px;
+      color: #fff;
+      overflow-y: auto;
+      max-height: 80vh;
+    }
+    h3 {
+      margin-bottom: 15px;
+      color: #ffca28;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+    input, textarea {
+      background: rgba(255,255,255,0.9);
+      color: #333;
+    }
+    button {
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+    }
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00c6ff;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 10px;
+    }
+    .todo-item {
+      background: rgba(0,0,0,0.2);
+      margin-top: 8px;
+      padding: 10px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+    }
+    .delete-btn {
+      background: #e53935;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .info-bar {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 1rem;
+      color: #90caf9;
+      text-shadow: 1px 1px 3px #000;
+    }
+    .task-image, .uploaded-img {
+      width: 100%;
+      margin-top: 15px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+      object-fit: cover;
+    }
+    .image-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .image-preview img {
+      width: 100px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <h1>Ultimate Smart Dashboard</h1>
+    <div class="content">
+      <!-- Contact Form Box -->
+      <div class="box">
+        <h3>Contact Form</h3>
+        <form id="contactForm">
+          <input type="text" id="name" placeholder="Your Name" required>
+          <input type="email" id="email" placeholder="Your Email" required>
+          <textarea id="message" placeholder="Your Message" rows="3" maxlength="250" oninput="updateCharCount()"></textarea>
+          <div class="info-bar" id="charCounter">0/250</div>
+          <button type="submit">Send</button>
+        </form>
+      </div>
+
+      <!-- To-Do List Box -->
+      <div class="box">
+        <h3>To-Do List</h3>
+        <input type="text" id="todoInput" placeholder="New Task">
+        <button onclick="addTodo()">Add</button>
+        <ul id="todoList"></ul>
+        <img src="https://cdn-icons-png.flaticon.com/512/5622/5622942.png" alt="Task Icon" class="task-image">
+
+        <h3>Live Image Upload</h3>
+        <input type="file" id="imageUploader" accept="image/*" multiple>
+        <div class="image-preview" id="imagePreview"></div>
+      </div>
+    </div>
+
+    <div class="info-bar" id="clock"></div>
+    <div class="info-bar" id="quote"></div>
+  </div>
+
+  <script>
+    // Contact Form Validation
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+      const emailPattern = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+      if (!name || !email || !message || !emailPattern.test(email)) {
+        alert('Please enter valid name, email, and message.');
+        e.preventDefault();
+      }
+    });
+
+    // Update Character Counter for the message
+    function updateCharCount() {
+      const msg = document.getElementById('message').value;
+      document.getElementById('charCounter').textContent = msg.length + '/250';
+    }
+
+    // Add Todo Functionality
+    function addTodo() {
+      const input = document.getElementById('todoInput');
+      const task = input.value.trim();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+
+      if (task && name && email) {
+        const li = document.createElement('li');
+        li.className = 'todo-item';
+        li.innerHTML = `
+          <strong>${name}</strong> (${email}) - ${task}
+          <button class="delete-btn" onclick="this.parentElement.remove()">Delete</button>
+        `;
+        document.getElementById('todoList').appendChild(li);
+        input.value = '';
+      } else {
+        alert('Please fill in both the task and your contact details.');
+      }
+    }
+
+    // Update Clock
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock').textContent = 'Time: ' + now.toLocaleTimeString();
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Random Quotes for Display
+    const quotes = [
+      "Push yourself, because no one else is going to do it for you.",
+      "Great things never come from comfort zones.",
+      "Success doesn’t just find you. You have to go out and get it.",
+      "Dream it. Wish it. Do it."
+    ];
+    document.getElementById('quote').textContent = quotes[Math.floor(Math.random() * quotes.length)];
+
+    // Live Image Upload Logic
+    document.getElementById('imageUploader').addEventListener('change', function () {
+      const preview = document.getElementById('imagePreview');
+      preview.innerHTML = ''; // clear previous images
+      const files = this.files;
+
+      for (let file of files) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+</body>
+</html>
